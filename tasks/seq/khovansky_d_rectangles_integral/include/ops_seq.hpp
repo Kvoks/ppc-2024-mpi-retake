@@ -1,6 +1,9 @@
 #pragma once
 
 #include <functional>
+#include <utility>
+#include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace khovansky_d_rectangles_integral_seq {
@@ -12,6 +15,7 @@ class RectanglesIntegralSeq : public ppc::core::Task {
   bool ValidationImpl() override;
   bool RunImpl() override;
   bool PostProcessingImpl() override;
+
  private:
   double tolerance_;
   double computed_result_{};

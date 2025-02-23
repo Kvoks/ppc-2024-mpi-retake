@@ -1,11 +1,13 @@
 #include "mpi/khovansky_d_rectangles_integral/include/ops_mpi.hpp"
 
-#include <functional>
-#include <vector>
-#include <cmath>
-#include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
-#include "core/task/include/task.hpp"
+#include <boost/mpi/collectives/reduce.hpp>
+#include <boost/mpi/communicator.hpp>
+#include <cmath>
+#include <cstddef>
+#include <functional>
+#include <utility>
+#include <vector>
 
 namespace khovansky_d_rectangles_integral_mpi {
 
@@ -14,8 +16,8 @@ bool RectanglesIntegralSeq::PreProcessingImpl() {
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
 
-  auto func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
-  if (func_ptr) {
+  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
     return false;
@@ -46,8 +48,9 @@ bool RectanglesIntegralSeq::RunImpl() {
   std::vector<double> step(dim);
   std::vector<double> variables(dim);
 
-  double integral = 0, prevIntegral;
-  
+  double integral = 0;
+  double prevIntegral = 0;
+
   do {
     prevIntegral = integral;
     integral = 0;
@@ -74,7 +77,9 @@ bool RectanglesIntegralSeq::RunImpl() {
         indices[idx] = 0;
         idx++;
       }
-      if (idx == dim) done = true;
+      if (idx == dim) {
+        done = true;
+      }
     }
 
     double volume = 1.0;
@@ -99,8 +104,8 @@ bool RectanglesIntegralMpi::PreProcessingImpl() {
   auto* ptr = reinterpret_cast<std::pair<double, double>*>(task_data->inputs[0]);
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
-  auto func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
-  if (func_ptr) {
+  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
     return false;
@@ -109,10 +114,8 @@ bool RectanglesIntegralMpi::PreProcessingImpl() {
 }
 
 bool RectanglesIntegralMpi::ValidationImpl() {
-  if (!task_data || task_data->inputs_count[0] <= 0 || task_data->inputs.size() != 3 || task_data->outputs_count[0] != 1) {
-    return false;
-  }
-  return true;
+  return !(!task_data || task_data->inputs_count[0] <= 0 || task_data->inputs.size() != 3 ||
+      task_data->outputs_count[0] != 1);
 }
 
 bool RectanglesIntegralMpi::RunImpl() {
@@ -121,7 +124,9 @@ bool RectanglesIntegralMpi::RunImpl() {
   std::vector<double> step(dim);
   std::vector<double> variables(dim);
 
-  double integral = 0, prevIntegral;
+  double integral = 0;
+  double prevIntegral =0;
+
   do {
     prevIntegral = integral;
     integral = 0;
@@ -147,7 +152,9 @@ bool RectanglesIntegralMpi::RunImpl() {
         indices[idx] = 0;
         idx++;
       }
-      if (idx == dim) done = true;
+      if (idx == dim) {
+        done = true;
+      }
     }
 
     double volume = 1.0;

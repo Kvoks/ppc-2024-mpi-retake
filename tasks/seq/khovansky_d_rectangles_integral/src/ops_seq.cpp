@@ -1,6 +1,9 @@
 #include "seq/khovansky_d_rectangles_integral/include/ops_seq.hpp"
 
 #include <cmath>
+#include <cstddef>
+#include <functional>
+#include <utility>
 #include <vector>
 
 namespace khovansky_d_rectangles_integral_seq {
@@ -10,8 +13,8 @@ bool RectanglesIntegralSeq::PreProcessingImpl() {
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
 
-  auto func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
-  if (func_ptr) {
+  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
     return false;
@@ -42,8 +45,9 @@ bool RectanglesIntegralSeq::RunImpl() {
   std::vector<double> step(dim);
   std::vector<double> variables(dim);
 
-  double integral = 0, prevIntegral;
-  
+  double integral = 0;
+  double prevIntegral = 0;
+
   do {
     prevIntegral = integral;
     integral = 0;
@@ -70,7 +74,9 @@ bool RectanglesIntegralSeq::RunImpl() {
         indices[idx] = 0;
         idx++;
       }
-      if (idx == dim) done = true;
+      if (idx == dim) {
+        done = true;
+      }
     }
 
     double volume = 1.0;

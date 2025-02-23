@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-
 #include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -17,16 +17,13 @@ TEST(khovansky_d_rectangles_integral_mpi, test_pipeline_run) {
   constexpr int kNumRuns = 8000;
 
   std::vector<std::pair<double, double>> bounds = {
-      {-100000000.0, 100000000.0}, 
-      {-100000000.0, 100000000.0}, 
-      {-100000000.0, 100000000.0}
-  };
+      {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}};
 
   double tolerance = 1e-6;
   double result = 0.0;
 
-  auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
+  auto func_ptr =
+      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double>& args) -> double {
         double product = 1.0;
         for (int i = 0; i < 9; ++i) {
           product *= args[0] * args[1] * args[2];
@@ -47,8 +44,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_pipeline_run) {
     task_data_mpi->outputs_count.emplace_back(1);
   }
 
-  auto test_task_parallel =
-      std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesIntegralMpi>(task_data_mpi);
+  auto test_task_parallel = std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesIntegralMpi>(task_data_mpi);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = kNumRuns;
@@ -74,16 +70,13 @@ TEST(khovansky_d_rectangles_integral_mpi, test_task_run) {
   constexpr int kNumRuns = 3000000;
 
   std::vector<std::pair<double, double>> bounds = {
-    {-100000000.0, 100000000.0}, 
-    {-100000000.0, 100000000.0}, 
-    {-100000000.0, 100000000.0}
-  };
+      {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}};
 
   double tolerance = 1e-6;
   double result = 0.0;
 
-  auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
+  auto func_ptr =
+      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double>& args) -> double {
         double product = 1.0;
         for (int i = 0; i < 9; ++i) {
           product *= args[0] * args[1] * args[2];
@@ -104,8 +97,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_task_run) {
     task_data_mpi->outputs_count.emplace_back(1);
   }
 
-  auto test_task_parallel =
-      std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesIntegralMpi>(task_data_mpi);
+  auto test_task_parallel = std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesIntegralMpi>(task_data_mpi);
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = kNumRuns;

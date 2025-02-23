@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <functional>
 #include <memory>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -13,9 +15,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_integral_x) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0];
-      });
+      [](const std::vector<double>& args) -> double { return args[0]; });
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
@@ -42,9 +42,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_multidimensional_integral_xy) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] * args[1];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] * args[1]; });
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
@@ -71,9 +69,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_multidimensional_integral_xyz) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] * args[1] * args[2];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] * args[1] * args[2]; });
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
@@ -100,9 +96,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_symmetric_function) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] * args[0];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] * args[0]; });
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
@@ -129,9 +123,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_integral_sum) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] + args[1];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] + args[1]; });
 
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));

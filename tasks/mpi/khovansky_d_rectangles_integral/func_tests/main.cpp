@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-
+#include <cstdint>
+#include <functional>
 #include <memory>
-#include <random>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -16,9 +17,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_integral_x) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0];
-      });
+      [](const std::vector<double>& args) -> double { return args[0]; });
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -50,9 +49,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_multidimensional_integral_xy) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] * args[1];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] * args[1]; });
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -84,9 +81,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_multidimensional_integral_xyz) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] * args[1] * args[2];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] * args[1] * args[2]; });
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -118,9 +113,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_integral_sum) {
   double result = 0.0;
 
   auto func_ptr = std::make_shared<std::function<double(std::vector<double>)>>(
-      [](const std::vector<double>& args) -> double {
-        return args[0] + args[1];
-      });
+      [](const std::vector<double>& args) -> double { return args[0] + args[1]; });
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
