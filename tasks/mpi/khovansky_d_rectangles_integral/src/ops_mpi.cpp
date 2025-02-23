@@ -16,7 +16,7 @@ bool RectanglesIntegralSeq::PreProcessingImpl() {
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
 
-  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  auto* func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
   if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
@@ -49,10 +49,10 @@ bool RectanglesIntegralSeq::RunImpl() {
   std::vector<double> variables(dim);
 
   double integral = 0;
-  double prevIntegral = 0;
+  double prev_integral = 0;
 
   do {
-    prevIntegral = integral;
+    prev_integral = integral;
     integral = 0;
 
     for (size_t i = 0; i < dim; i++) {
@@ -89,7 +89,7 @@ bool RectanglesIntegralSeq::RunImpl() {
     }
 
     integral *= volume;
-  } while (std::abs(integral - prevIntegral) > tolerance_);
+  } while (std::abs(integral - prev_integral) > tolerance_);
 
   computed_result_ = integral;
   return true;
@@ -104,7 +104,7 @@ bool RectanglesIntegralMpi::PreProcessingImpl() {
   auto* ptr = reinterpret_cast<std::pair<double, double>*>(task_data->inputs[0]);
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
-  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  auto* func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
   if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
@@ -114,8 +114,8 @@ bool RectanglesIntegralMpi::PreProcessingImpl() {
 }
 
 bool RectanglesIntegralMpi::ValidationImpl() {
-  return !(!task_data || task_data->inputs_count[0] <= 0 || task_data->inputs.size() != 3 ||
-      task_data->outputs_count[0] != 1);
+  return (task_data && task_data->inputs_count[0] > 0 && task_data->inputs.size() == 3 &&
+           task_data->outputs_count[0] == 1);
 }
 
 bool RectanglesIntegralMpi::RunImpl() {
@@ -125,10 +125,10 @@ bool RectanglesIntegralMpi::RunImpl() {
   std::vector<double> variables(dim);
 
   double integral = 0;
-  double prevIntegral =0;
+  double prev_integral = 0;
 
   do {
-    prevIntegral = integral;
+    prev_integral = integral;
     integral = 0;
 
     for (size_t i = 0; i < dim; i++) {
@@ -164,7 +164,7 @@ bool RectanglesIntegralMpi::RunImpl() {
     }
 
     integral *= volume;
-  } while (std::abs(integral - prevIntegral) > tolerance_);
+  } while (std::abs(integral - prev_integral) > tolerance_);
 
   boost::mpi::reduce(world_, integral, computed_result_, std::plus<>(), 0);
   return true;

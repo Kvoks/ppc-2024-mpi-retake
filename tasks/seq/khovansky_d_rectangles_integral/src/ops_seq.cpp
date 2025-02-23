@@ -12,8 +12,7 @@ bool RectanglesIntegralSeq::PreProcessingImpl() {
   auto* ptr = reinterpret_cast<std::pair<double, double>*>(task_data->inputs[0]);
   bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
   tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
-
-  auto *func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+  auto* func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
   if (func_ptr != nullptr) {
     function_ = *func_ptr;
   } else {
@@ -46,10 +45,10 @@ bool RectanglesIntegralSeq::RunImpl() {
   std::vector<double> variables(dim);
 
   double integral = 0;
-  double prevIntegral = 0;
+  double prev_integral = 0;
 
   do {
-    prevIntegral = integral;
+    prev_integral = integral;
     integral = 0;
 
     for (size_t i = 0; i < dim; i++) {
@@ -86,7 +85,7 @@ bool RectanglesIntegralSeq::RunImpl() {
     }
 
     integral *= volume;
-  } while (std::abs(integral - prevIntegral) > tolerance_);
+  } while (std::abs(integral - prev_integral) > tolerance_);
 
   computed_result_ = integral;
   return true;

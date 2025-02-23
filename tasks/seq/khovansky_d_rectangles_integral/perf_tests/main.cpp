@@ -22,7 +22,7 @@ TEST(khovansky_d_rectangles_integral_seq, test_pipeline_run) {
   double result = 0.0;
 
   auto func_ptr =
-      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double>& args) -> double {
+      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double> &args) -> double {
         double product = 1.0;
         for (int i = 0; i < 9; ++i) {
           product *= args[0] * args[1] * args[2];
@@ -65,13 +65,12 @@ TEST(khovansky_d_rectangles_integral_seq, test_task_run) {
   constexpr int kNumRuns = 3000000;
 
   std::vector<std::pair<double, double>> bounds = {
-    {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}};
+      {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}, {-100000000.0, 100000000.0}};
 
   double tolerance = 1e-6;
   double result = 0.0;
-
   auto func_ptr =
-      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double>& args) -> double {
+      std::make_shared<std::function<double(std::vector<double>)>>([](const std::vector<double> &args) -> double {
         double product = 1.0;
         for (int i = 0; i < 9; ++i) {
           product *= args[0] * args[1] * args[2];
