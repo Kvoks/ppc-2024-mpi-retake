@@ -115,7 +115,7 @@ bool RectanglesIntegralMpi::PreProcessingImpl() {
 
 bool RectanglesIntegralMpi::ValidationImpl() {
   return (task_data && task_data->inputs_count[0] > 0 && task_data->inputs.size() == 3 &&
-           task_data->outputs_count[0] == 1);
+          task_data->outputs_count[0] == 1);
 }
 
 bool RectanglesIntegralMpi::RunImpl() {
