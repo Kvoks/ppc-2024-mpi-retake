@@ -101,16 +101,15 @@ bool RectanglesIntegralSeq::PostProcessingImpl() {
 }
 
 bool RectanglesIntegralMpi::PreProcessingImpl() {
-  auto* ptr = reinterpret_cast<std::pair<double, double>*>(task_data->inputs[0]);
-  bounds_.assign(ptr, ptr + task_data->inputs_count[0]);
-  tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
-  auto* func_ptr = reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
-  if (func_ptr != nullptr) {
-    function_ = *func_ptr;
-  } else {
-    return false;
-  }
-  return true;
+  if (!task_data || task_data->inputs.size() < 3) {
+        return false;
+    }
+    auto* bounds_ptr = reinterpret_cast<std::pair<double, double>*>(task_data->inputs[0]);
+    bounds_.assign(bounds_ptr, bounds_ptr + task_data->inputs_count[0]);
+    tolerance_ = *reinterpret_cast<double*>(task_data->inputs[1]);
+    function_ = *reinterpret_cast<std::function<double(std::vector<double>)>*>(task_data->inputs[2]);
+
+    return true;
 }
 
 bool RectanglesIntegralMpi::ValidationImpl() {

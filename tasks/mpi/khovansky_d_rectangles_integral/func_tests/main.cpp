@@ -21,14 +21,21 @@ TEST(khovansky_d_rectangles_integral_mpi, test_integral_x) {
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
-    task_data_mpi->inputs_count.emplace_back(bounds.size());
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(&tolerance));
-    task_data_mpi->inputs_count.emplace_back(1);
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(func_ptr.get()));
-    task_data_mpi->inputs_count.emplace_back(1);
-    task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
-    task_data_mpi->outputs_count.emplace_back(1);
+      std::vector<uint8_t> bounds_data(sizeof(std::pair<double, double>) * bounds.size());
+      std::memcpy(bounds_data.data(), bounds.data(), bounds_data.size());
+      task_data_mpi->inputs.emplace_back(bounds_data.data());
+      task_data_mpi->inputs_count.emplace_back(bounds.size());
+
+      task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(&tolerance));
+      task_data_mpi->inputs_count.emplace_back(1);
+
+      std::vector<uint8_t> func_data(sizeof(std::function<double(std::vector<double>)>));
+      std::memcpy(func_data.data(), func_ptr.get(), sizeof(std::function<double(std::vector<double>)>));
+      task_data_mpi->inputs.emplace_back(func_data.data());
+      task_data_mpi->inputs_count.emplace_back(func_data.size());
+
+      task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
+      task_data_mpi->outputs_count.emplace_back(1);
   }
 
   khovansky_d_rectangles_integral_mpi::RectanglesIntegralMpi rectangles_integral(task_data_mpi);
@@ -38,7 +45,7 @@ TEST(khovansky_d_rectangles_integral_mpi, test_integral_x) {
   rectangles_integral.PostProcessingImpl();
 
   if (world.rank() == 0) {
-    ASSERT_NEAR(result, 0.5, tolerance);
+      ASSERT_NEAR(result, 0.5, tolerance);
   }
 }
 
@@ -53,12 +60,19 @@ TEST(khovansky_d_rectangles_integral_mpi, test_multidimensional_integral_xy) {
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
+    std::vector<uint8_t> bounds_data(sizeof(std::pair<double, double>) * bounds.size());
+    std::memcpy(bounds_data.data(), bounds.data(), bounds_data.size());
+    task_data_mpi->inputs.emplace_back(bounds_data.data());
     task_data_mpi->inputs_count.emplace_back(bounds.size());
+
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(&tolerance));
     task_data_mpi->inputs_count.emplace_back(1);
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(func_ptr.get()));
-    task_data_mpi->inputs_count.emplace_back(1);
+
+    std::vector<uint8_t> func_data(sizeof(std::function<double(std::vector<double>)>));
+    std::memcpy(func_data.data(), func_ptr.get(), sizeof(std::function<double(std::vector<double>)>));
+    task_data_mpi->inputs.emplace_back(func_data.data());
+    task_data_mpi->inputs_count.emplace_back(func_data.size());
+
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
     task_data_mpi->outputs_count.emplace_back(1);
   }
@@ -85,12 +99,19 @@ TEST(khovansky_d_rectangles_integral_mpi, test_multidimensional_integral_xyz) {
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
+    std::vector<uint8_t> bounds_data(sizeof(std::pair<double, double>) * bounds.size());
+    std::memcpy(bounds_data.data(), bounds.data(), bounds_data.size());
+    task_data_mpi->inputs.emplace_back(bounds_data.data());
     task_data_mpi->inputs_count.emplace_back(bounds.size());
+
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(&tolerance));
     task_data_mpi->inputs_count.emplace_back(1);
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(func_ptr.get()));
-    task_data_mpi->inputs_count.emplace_back(1);
+
+    std::vector<uint8_t> func_data(sizeof(std::function<double(std::vector<double>)>));
+    std::memcpy(func_data.data(), func_ptr.get(), sizeof(std::function<double(std::vector<double>)>));
+    task_data_mpi->inputs.emplace_back(func_data.data());
+    task_data_mpi->inputs_count.emplace_back(func_data.size());
+
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
     task_data_mpi->outputs_count.emplace_back(1);
   }
@@ -117,12 +138,19 @@ TEST(khovansky_d_rectangles_integral_mpi, test_integral_sum) {
 
   auto task_data_mpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
+    std::vector<uint8_t> bounds_data(sizeof(std::pair<double, double>) * bounds.size());
+    std::memcpy(bounds_data.data(), bounds.data(), bounds_data.size());
+    task_data_mpi->inputs.emplace_back(bounds_data.data());
     task_data_mpi->inputs_count.emplace_back(bounds.size());
+
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(&tolerance));
     task_data_mpi->inputs_count.emplace_back(1);
-    task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(func_ptr.get()));
-    task_data_mpi->inputs_count.emplace_back(1);
+
+    std::vector<uint8_t> func_data(sizeof(std::function<double(std::vector<double>)>));
+    std::memcpy(func_data.data(), func_ptr.get(), sizeof(std::function<double(std::vector<double>)>));
+    task_data_mpi->inputs.emplace_back(func_data.data());
+    task_data_mpi->inputs_count.emplace_back(func_data.size());
+
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
     task_data_mpi->outputs_count.emplace_back(1);
   }
