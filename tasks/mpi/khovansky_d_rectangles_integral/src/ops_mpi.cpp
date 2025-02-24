@@ -35,10 +35,6 @@ bool khovansky_d_rectangles_integral_mpi::RectanglesMpi::PreProcessingImpl() {
 
 bool khovansky_d_rectangles_integral_mpi::RectanglesMpi::ValidationImpl() {
   if (world_.rank() == 0) {
-    if (!task_data) {
-      return false;
-    }
-
     if (task_data->inputs_count[0] < 1 || task_data->inputs_count[1] < 1) {
       return false;
     }
@@ -51,10 +47,6 @@ bool khovansky_d_rectangles_integral_mpi::RectanglesMpi::ValidationImpl() {
     }
 
     if (lower_bound_ptr == nullptr || upper_bound_ptr == nullptr) {
-      return false;
-    }
-
-    if (task_data->inputs_count[0] != task_data->inputs_count[1]) {
       return false;
     }
 
