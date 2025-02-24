@@ -53,7 +53,7 @@ bool khovansky_d_rectangles_integral_mpi::RectanglesMpi::ValidationImpl() {
     if (lower_bound_ptr == nullptr || upper_bound_ptr == nullptr) {
       return false;
     }
-    
+
     if (task_data->inputs_count[0] != task_data->inputs_count[1]) {
       return false;
     }
@@ -95,12 +95,12 @@ bool khovansky_d_rectangles_integral_mpi::RectanglesMpi::RunImpl() {
     std::vector<double> point_coordinates(num_dimensions_);
 
     for (unsigned int j = 0; j < num_dimensions_; j++) {
-      indices[j] = temp_idx % num_partitions_;
+      indices[j] = static_cast<int>(temp_idx % num_partitions_);
       temp_idx /= num_partitions_;
       point_coordinates[j] = lower_limits_[j] + (indices[j] + 0.5) * step_size[j];
     }
 
-    local_result += integrand_function_(point_coordinates);
+    local_result += integrand_function(point_coordinates);
   }
 
   for (unsigned int j = 0; j < num_dimensions_; j++) {

@@ -11,26 +11,24 @@
 #include "mpi/khovansky_d_rectangles_integral/include/ops_mpi.hpp"
 
 TEST(khovansky_d_rectangles_integral_mpi, test_pipeline_run_mpi) {
-  boost::mpi::communicator world_;
-  const int num_dimensions_ = 3;
-  std::vector<double> lower_limits_ = {0.0, 0.0, 0.0};
-  std::vector<double> upper_limits_ = {1.0, 1.0, 1.0};
-  int num_partitions_ = 100;
-  double integral_result_ = 0.0;
+  boost::mpi::communicator world;
+  const int num_dimensions = 3;
+  std::vector<double> lower_limits = {0.0, 0.0, 0.0};
+  std::vector<double> upper_limits = {1.0, 1.0, 1.0};
+  int num_partitions = 100;
+  double integral_result = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  if (world_.rank() == 0) {
-    task_data->inputs_count.emplace_back(num_dimensions_);
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(lower_limits_.data()));
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(upper_limits_.data()));
-    task_data->inputs_count.emplace_back(num_partitions_);
-    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&integral_result_));
+  if (world.rank() == 0) {
+    task_data->inputs_count.emplace_back(num_dimensions);
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(lower_limits.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(upper_limits.data()));
+    task_data->inputs_count.emplace_back(num_partitions);
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&integral_result));
   }
 
   auto test_task = std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesMpi>(task_data);
-  test_task->integrand_function_ = [](const std::vector<double> &point) {
-    return point[0] * point[1] * point[2];
-  };
+  test_task->integrand_function = [](const std::vector<double> &point) { return point[0] * point[1] * point[2]; };
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 50;
@@ -45,33 +43,31 @@ TEST(khovansky_d_rectangles_integral_mpi, test_pipeline_run_mpi) {
 
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task);
   perf_analyzer->PipelineRun(perf_attr, perf_results);
-  if (world_.rank() == 0) {
+  if (world.rank() == 0) {
     ppc::core::Perf::PrintPerfStatistic(perf_results);
-    ASSERT_NEAR(integral_result_, 1.0 / 8.0, 1e-1);
+    ASSERT_NEAR(integral_result, 1.0 / 8.0, 1e-1);
   }
 }
 
 TEST(khovansky_d_rectangles_integral_mpi, test_task_run_mpi) {
-  boost::mpi::communicator world_;
-  const int num_dimensions_ = 3;
-  std::vector<double> lower_limits_ = {0.0, 0.0, 0.0};
-  std::vector<double> upper_limits_ = {1.0, 1.0, 1.0};
-  int num_partitions_ = 100;
-  double integral_result_ = 0.0;
+  boost::mpi::communicator world;
+  const int num_dimensions = 3;
+  std::vector<double> lower_limits = {0.0, 0.0, 0.0};
+  std::vector<double> upper_limits = {1.0, 1.0, 1.0};
+  int num_partitions = 100;
+  double integral_result = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  if (world_.rank() == 0) {
-    task_data->inputs_count.emplace_back(num_dimensions_);
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(lower_limits_.data()));
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(upper_limits_.data()));
-    task_data->inputs_count.emplace_back(num_partitions_);
-    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&integral_result_));
+  if (world.rank() == 0) {
+    task_data->inputs_count.emplace_back(num_dimensions);
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(lower_limits.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(upper_limits.data()));
+    task_data->inputs_count.emplace_back(num_partitions);
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&integral_result));
   }
 
   auto test_task = std::make_shared<khovansky_d_rectangles_integral_mpi::RectanglesMpi>(task_data);
-  test_task->integrand_function_ = [](const std::vector<double> &point) {
-    return point[0] * point[1] * point[2];
-  };
+  test_task->integrand_function = [](const std::vector<double> &point) { return point[0] * point[1] * point[2]; };
 
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 50;
@@ -86,8 +82,8 @@ TEST(khovansky_d_rectangles_integral_mpi, test_task_run_mpi) {
 
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task);
   perf_analyzer->TaskRun(perf_attr, perf_results);
-  if (world_.rank() == 0) {
+  if (world.rank() == 0) {
     ppc::core::Perf::PrintPerfStatistic(perf_results);
-    ASSERT_NEAR(integral_result_, 1.0 / 8.0, 1e-1);
+    ASSERT_NEAR(integral_result, 1.0 / 8.0, 1e-1);
   }
 }

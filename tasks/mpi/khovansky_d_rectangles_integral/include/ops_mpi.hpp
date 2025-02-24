@@ -18,7 +18,7 @@ class RectanglesMpi : public ppc::core::Task {
   bool RunImpl() override;
   bool PostProcessingImpl() override;
 
-  std::function<double(const std::vector<double>&)> integrand_function_;
+  std::function<double(const std::vector<double>&)> integrand_function;
 
  private:
   boost::mpi::communicator world_;
